@@ -4,7 +4,7 @@ export const authReducer = createSlice({
   name: "auth",
   initialState: {
     user: null,
-    loading: false,
+    loading: true,
   },
   reducers: {
     userExist: (state, action) => {
