@@ -17,6 +17,7 @@ export const userAPI = createApi({
           password,
         },
       }),
+      invalidatesTags: ["User"]
     }),
     login: builder.mutation({
       query: ({ userId, password }) => ({

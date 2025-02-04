@@ -3,6 +3,7 @@ import { useGetUserQuery, useLoginMutation, useRegisterMutation } from "../redux
 import { useDispatch } from "react-redux";
 import { userExist } from "../redux/reducers/authSlice";
 import { useNavigate } from "react-router-dom";
+import toast from "react-hot-toast"; // Removed unused `useToasterStore`
 
 const Login = () => {
   const [isLogin, setIsLogin] = useState(true);
@@ -11,7 +12,7 @@ const Login = () => {
   const [userId, setUserId] = useState("");
   const dispatch = useDispatch();
   const navigate = useNavigate();
-  const { refetch } = useGetUserQuery(); 
+  const { refetch } = useGetUserQuery();
 
   const [login, { isLoading: isLoginLoading, error: loginError }] = useLoginMutation();
   const [register, { isLoading: isRegisterLoading, error: registerError }] = useRegisterMutation();
@@ -19,28 +20,38 @@ const Login = () => {
   const handleLogin = async (e) => {
     e.preventDefault();
     try {
-      const { data } = await login({ userId, password });
+      const { data, error } = await login({ userId, password });
       if (data && data.user) {
         dispatch(userExist({ user: data.user }));
-        await refetch(); 
+        await refetch();
         navigate("/");
+        toast.success("Login successful!");
+      }
+      if (error?.data?.message) {
+        toast.error(error.data.message);
       }
     } catch (err) {
       console.error(err);
+      toast.error("An error occurred during login.");
     }
   };
 
   const handleSignUp = async (e) => {
     e.preventDefault();
     try {
-      const { data } = await register({ userId, password, name });
+      const { data, error } = await register({ userId, password, name });
       if (data && data.user) {
         dispatch(userExist({ user: data.user }));
-        await refetch(); 
+        await refetch();
         navigate("/");
+        toast.success("Account created successfully!");
+      }
+      if (error?.data?.message) {
+        toast.error(error.data.message);
       }
     } catch (err) {
       console.error(err);
+      toast.error("An error occurred during registration.");
     }
   };
 

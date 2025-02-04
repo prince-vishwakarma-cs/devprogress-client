@@ -3,8 +3,6 @@ import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 
 const leetcodebaseurl = import.meta.env.VITE_LEET
 const backendurl = import.meta.env.VITE_SERVER
-console.log(`${leetcodebaseurl}/this_coder/badges`)
-console.log(`${backendurl}/this_coder`)
 export const platformUPI = createApi({
   reducerPath: "platformAPI",
   baseQuery: fetchBaseQuery({

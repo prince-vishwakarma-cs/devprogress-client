@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { useLogoutMutation, useUpdateMutation } from "../redux/api/userAPI";
 import { userExist, userNotExist } from "../redux/reducers/authSlice";
@@ -10,8 +10,8 @@ export const Userinfo = () => {
   const [updateUser, { isLoading }] = useUpdateMutation();
   const avatarurl = user?.user?.avatar?.url || "";
 
-
-  const [logoutUser, {isLoading:logoutLoading}] = useLogoutMutation()
+  const [logoutUser, { isLoading: logoutLoading, error: logoutError }] =
+    useLogoutMutation();
   const [editing, setEditing] = useState(false);
   const [formData, setFormData] = useState({
     name: user?.user?.name || "",
@@ -22,14 +22,27 @@ export const Userinfo = () => {
     avatar: user?.user?.avatar || null,
   });
 
-  const originalData = {
-    name: user?.user?.name || "",
-    leetcode: user?.user?.platform_url?.leetcode || "",
-    gfg: user?.user?.platform_url?.gfg || "",
-    codeforces: user?.user?.platform_url?.codeforces || "",
-    codechef: user?.user?.platform_url?.codechef || "",
-    avatar: user?.user?.avatar || null,
-  };
+  useEffect(() => {
+    if (!user?.user) {
+      setFormData({
+        name: "",
+        leetcode: "",
+        gfg: "",
+        codeforces: "",
+        codechef: "",
+        avatar: null,
+      });
+    } else {
+      setFormData({
+        name: user?.user?.name || "",
+        leetcode: user?.user?.platform_url?.leetcode || "",
+        gfg: user?.user?.platform_url?.gfg || "",
+        codeforces: user?.user?.platform_url?.codeforces || "",
+        codechef: user?.user?.platform_url?.codechef || "",
+        avatar: user?.user?.avatar || null,
+      });
+    }
+  }, [user]);
 
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
@@ -42,36 +55,40 @@ export const Userinfo = () => {
   const handleUpdate = async () => {
     const updateData = new FormData();
     Object.keys(formData).forEach((key) => {
-      if (formData[key] && formData[key] !== originalData[key]) {
+      if (formData[key] && formData[key] !== "") {
         updateData.append(key, formData[key]);
       }
     });
 
     try {
-      const { data } = await updateUser(updateData);
+      const { data, error } = await updateUser(updateData);
       if (data?.success) {
         dispatch(userExist({ user: data.user }));
         setEditing(false);
         toast.success(data.message);
       }
+      if (error) {
+        toast.error(error.data?.message);
+      }
     } catch (error) {
-      console.error("Update failed:", error);
+      toast.error("An error occurred while updating the profile.");
     }
   };
 
-  const handleLogout = async()=>{
+  const handleLogout = async () => {
     try {
-      const {data}= await logoutUser()
-      if(data?.success){
-        dispatch(userNotExist())
-        setEditing(false)
+      const { data, error: logError } = await logoutUser();
+      if (data?.success) {
+        dispatch(userNotExist());
         toast.success(data.message);
+      } else {
+        toast.error(logError.data?.message);
       }
-      
     } catch (error) {
-      console.log("Logout Failed",error)
+      console.error("Logout Failed", error);
+      toast.error(error?.message || "An error occurred while logging out.");
     }
-  }
+  };
 
   return (
     <div className="!p-[1rem] max-w-lg mx-auto ">
@@ -83,7 +100,6 @@ export const Userinfo = () => {
               src={avatarurl}
               alt="avatar"
               className="w-24 h-24 rounded-full object-cover"
-
             />
           )}
         </div>
@@ -97,7 +113,6 @@ export const Userinfo = () => {
             viewBox="0 0 24 24"
             strokeWidth="1.5"
             stroke="currentColor"
-            class="size-6"
             className={`size-5 cursor-pointer ${editing ? "hidden" : "block"}`}
             onClick={() => setEditing(!editing)}
           >
@@ -122,7 +137,7 @@ export const Userinfo = () => {
                   <input
                     type="text"
                     name={key}
-                    className="w-full !px-4 !py-2 border border-bordercolor rounded-lg  text-secondary-text focus:outline-none focus:ring-2 focus:ring-accent"
+                    className="w-full !px-4 !py-2 border border-bordercolor rounded-lg text-secondary-text focus:outline-none focus:ring-2 focus:ring-accent"
                     value={formData[key]}
                     onChange={handleChange}
                     disabled={!editing}
@@ -131,6 +146,7 @@ export const Userinfo = () => {
               </div>
             )
         )}
+
         {editing && (
           <div className="flex gap-4">
             <button
@@ -143,7 +159,14 @@ export const Userinfo = () => {
             <button
               className="w-full mt-6 text-accent py-2 rounded-lg hover:bg-opacity-80 transition border-3 border-accent cursor-pointer"
               onClick={() => {
-                setFormData(originalData);
+                setFormData({
+                  name: user?.user?.name || "",
+                  leetcode: user?.user?.platform_url?.leetcode || "",
+                  gfg: user?.user?.platform_url?.gfg || "",
+                  codeforces: user?.user?.platform_url?.codeforces || "",
+                  codechef: user?.user?.platform_url?.codechef || "",
+                  avatar: user?.user?.avatar || null,
+                });
                 setEditing(false);
               }}
             >
@@ -151,6 +174,15 @@ export const Userinfo = () => {
             </button>
           </div>
         )}
+
+        {/* Logout Button */}
+        <button
+          className="w-full mt-6 bg-red-500 text-white py-2 rounded-lg hover:bg-red-600 transition cursor-pointer"
+          onClick={handleLogout}
+          disabled={logoutLoading}
+        >
+          {logoutLoading ? "Logging out..." : "Logout"}
+        </button>
       </div>
     </div>
   );

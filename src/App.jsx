@@ -16,7 +16,7 @@ const NotFound = lazy(() => import("./pages/NotFound"));
 
 const NavChips = () => {
   return (
-    <div className="flex space-x-4 p-4 text-white shadow-lg ">
+    <div className="flex space-x-4 p-4 text-white shadow-lg">
       <Link to="/leetcode" className="chip">
         Leetcode
       </Link>
@@ -43,6 +43,7 @@ const App = () => {
     if (!isLoading) {
       if (error) {
         dispatch(userNotExist());
+       toast.error(error.data?.message)
       } else if (data && data.user) {
         dispatch(userExist({ user: data.user }));
       }
@@ -58,6 +59,7 @@ const App = () => {
     );
   }
 
+  // Redirect to login if user is not logged in
   const PrivateRoute = ({ element }) => {
     return user ? element : <Navigate to="/login" />;
   };
@@ -65,43 +67,52 @@ const App = () => {
   return (
     <BrowserRouter>
       <div className="flex flex-col w-full h-screen bg-background-light">
-        {/* Navigation Chips Strip */}
-        <div className="flex w-full h-full">
-          <div className="w-1/4 p-4 m-2 bg-background rounded-2xl min-w-[15rem]">
-            <Userinfo />
+        {/* Render this part only if user is logged in */}
+        {user ? (
+          <div className="flex w-full h-full">
+            <div className="w-1/4 p-4 m-2 bg-background rounded-2xl min-w-[15rem]">
+              <Userinfo />
+            </div>
+            <div className="w-3/4 overflow-y-auto">
+              <NavChips />
+              <Suspense fallback={<div>Loading...</div>}>
+                <Routes>
+                  <Route path="/" element={<PrivateRoute element={<Home />} />} />
+                  <Route
+                    path="/leetcode"
+                    element={<PrivateRoute element={<Leetcode />} />}
+                  />
+                  <Route
+                    path="/codeforces"
+                    element={<PrivateRoute element={<Codeforces />} />}
+                  />
+                  <Route
+                    path="/codechef"
+                    element={<PrivateRoute element={<Codechef />} />}
+                  />
+                  <Route
+                    path="/gfg"
+                    element={<PrivateRoute element={<GeeksForGeeks />} />}
+                  />
+                  <Route path="/*" element={<NotFound />} />
+                </Routes>
+              </Suspense>
+            </div>
           </div>
-          <div className="w-3/4 overflow-y-auto">
-            <NavChips />
-            <div className="m-2">
+        ) : (
+          // If the user is not logged in, render the login page
+          <div className="flex items-center justify-center h-screen text-xl">
             <Suspense fallback={<div>Loading...</div>}>
               <Routes>
-                <Route path="/" element={<PrivateRoute element={<Home />} />} />
                 <Route
                   path="/login"
                   element={user ? <Navigate to="/" /> : <Login />}
                 />
-                <Route
-                  path="/leetcode"
-                  element={<PrivateRoute element={<Leetcode />} />}
-                />
-                <Route
-                  path="/codeforces"
-                  element={<PrivateRoute element={<Codeforces />} />}
-                />
-                <Route
-                  path="/codechef"
-                  element={<PrivateRoute element={<Codechef />} />}
-                />
-                <Route
-                  path="/gfg"
-                  element={<PrivateRoute element={<GeeksForGeeks />} />}
-                />
-                <Route path="/*" element={<NotFound />} />
+                <Route path="/*" element={<Navigate to="/login" />} />
               </Routes>
             </Suspense>
-            </div>
           </div>
-        </div>
+        )}
       </div>
       <Toaster position="bottom-center" />
     </BrowserRouter>
