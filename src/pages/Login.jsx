@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { useLoginMutation, useRegisterMutation } from "../redux/api/userAPI";
+import { useGetUserQuery, useLoginMutation, useRegisterMutation } from "../redux/api/userAPI";
 import { useDispatch } from "react-redux";
 import { userExist } from "../redux/reducers/authSlice";
 import { useNavigate } from "react-router-dom";
@@ -11,6 +11,7 @@ const Login = () => {
   const [userId, setUserId] = useState("");
   const dispatch = useDispatch();
   const navigate = useNavigate();
+  const { refetch } = useGetUserQuery(); 
 
   const [login, { isLoading: isLoginLoading, error: loginError }] = useLoginMutation();
   const [register, { isLoading: isRegisterLoading, error: registerError }] = useRegisterMutation();
@@ -21,6 +22,7 @@ const Login = () => {
       const { data } = await login({ userId, password });
       if (data && data.user) {
         dispatch(userExist({ user: data.user }));
+        await refetch(); 
         navigate("/");
       }
     } catch (err) {
@@ -34,6 +36,7 @@ const Login = () => {
       const { data } = await register({ userId, password, name });
       if (data && data.user) {
         dispatch(userExist({ user: data.user }));
+        await refetch(); 
         navigate("/");
       }
     } catch (err) {
