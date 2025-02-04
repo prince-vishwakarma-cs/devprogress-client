@@ -27,6 +27,7 @@ export const userAPI = createApi({
           password,
         },
       }),
+      invalidatesTags: ["User"]
     }),
     update:builder.mutation({
       query:(formdata)=>({
@@ -37,6 +38,7 @@ export const userAPI = createApi({
     }),
     getUser: builder.query({
       query: () => "/",
+      providesTags: ["User"]
     }),
   }),
 });
