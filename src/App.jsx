@@ -48,7 +48,7 @@ const NavChips = () => {
 // Loading Screen with animation and logo
 export const LoadingScreen = () => {
   return (
-    <div className="flex items-center justify-center w-full h-screen bg-background flex-col">
+    <div className="flex items-center justify-center w-full h-[100dvh] bg-background flex-col">
       <div className="mb-4">
         {/* Your SVG Logo */}
         <svg
@@ -100,7 +100,7 @@ const App = () => {
 
   return (
     <BrowserRouter>
-      <div className="flex w-full h-screen bg-background">
+      <div className="flex w-full h-[100dvh] bg-background">
         {/* Render this part only if user is logged in */}
         {user ? (
           <div className="flex w-full h-full">
