@@ -7,13 +7,13 @@ export const platformUPI = createApi({
   }),
   endpoints: (builder) => ({
     leetcode: builder.query({
-      query: ({ username }) =>`http://localhost:3000/${username}`,
+      query: ({ username }) =>`${import.meta.env.LEET_SERVER}/${username}`,
     }),
     leetcodebadges: builder.query({
-      query: ({ username }) =>`http://localhost:3000/${username}/badges`,
+      query: ({ username }) =>`${import.meta.env.LEET_SERVER}/${username}/badges`,
     }),
     leetcodesolved: builder.query({
-      query: ({ username }) =>`http://localhost:3000/${username}/solved`,
+      query: ({ username }) =>`${import.meta.env.LEET_SERVER}/${username}/solved`,
     }),
     gfg: builder.query({
       query: ({ username }) => `${import.meta.env.VITE_SERVER}/gfg/${username}`,
