@@ -1,22 +1,32 @@
-import React from 'react';
-import { useSelector } from 'react-redux';
-import { useCodeforcesQuery } from '../redux/api/platformAPI';
-import { RatingChart } from '../components/RatingChart';
+import React from "react";
+import { useSelector } from "react-redux";
+import { useCodeforcesQuery } from "../redux/api/platformAPI";
+import { RatingChart } from "../components/RatingChart";
+import { LoadingScreenExtras } from "../components/LoadingScreenExtras";
 
 const Codeforces = () => {
   const { user } = useSelector((state) => state.auth);
   const codeforcesUrl = user.user?.platform_url?.codeforces;
 
-  const { data: codeforcesdata, isLoading: codeforcesLoading } =
-    useCodeforcesQuery({
-      username: codeforcesUrl,
-    });
+  const {
+    data: codeforcesdata,
+    isLoading: codeforcesLoading,
+    error,
+  } = useCodeforcesQuery({
+    username: codeforcesUrl,
+  });
+
+  if (!codeforcesUrl || codeforcesUrl === "") {
+    return (
+      <div className="flex justify-center items-center w-full h-full text-xl text-red-500">
+        Add User handle to get stats
+      </div>
+    );
+  }
 
   if (codeforcesLoading) {
     return (
-      <div className="flex justify-center items-center w-full h-full text-xl">
-        Loading...
-      </div>
+      <LoadingScreenExtras/>
     );
   }
 
@@ -27,8 +37,6 @@ const Codeforces = () => {
       </div>
     );
   }
-
-  console.log(codeforcesdata.result)
 
   const {
     contribution,
@@ -47,7 +55,7 @@ const Codeforces = () => {
   return (
     <div className="flex flex-col items-center w-full !p-6">
       {/* Profile & Info */}
-      <div className="shadow-lg rounded-2xl p-6 w-full max-w-lg flex flex-col items-center">
+      <div className=" rounded-2xl p-6 w-full max-w-lg flex flex-col items-center">
         <img
           src={avatar}
           alt="Profile"
@@ -62,15 +70,15 @@ const Codeforces = () => {
 
       {/* Rating & Rank */}
       <div className="grid grid-cols-2 gap-4 mt-6 w-full max-w-lg">
-        <div className="shadow-md rounded-xl p-4 flex flex-col items-center">
+        <div className=" rounded-xl p-4 flex flex-col items-center">
           <span className="text-secondary-text">Current Rating</span>
           <span className="text-xl font-bold">{rating || "N/A"}</span>
         </div>
-        <div className="shadow-md rounded-xl p-4 flex flex-col items-center">
+        <div className=" rounded-xl p-4 flex flex-col items-center">
           <span className="text-secondary-text">Max Rating</span>
           <span className="text-xl font-bold">{maxRating || "N/A"}</span>
         </div>
-        <div className="shadow-md rounded-xl p-4 flex flex-col items-center">
+        <div className=" rounded-xl p-4 flex flex-col items-center">
           <span className="text-secondary-text">Max Rank</span>
           <span className="text-xl font-bold">{maxRank || "N/A"}</span>
         </div>
@@ -78,13 +86,14 @@ const Codeforces = () => {
 
       {/* Registration & Last Online */}
       <div className="grid grid-cols-2 gap-4 mt-6 w-full max-w-lg">
-        <div className="shadow-md rounded-xl p-4 flex flex-col items-center">
+        <div className=" rounded-xl p-4 flex flex-col items-center">
           <span className="text-secondary-text">Registration Time</span>
           <span className="text-xl font-bold">
-            {new Date(registrationTimeSeconds * 1000).toLocaleDateString() || "N/A"}
+            {new Date(registrationTimeSeconds * 1000).toLocaleDateString() ||
+              "N/A"}
           </span>
         </div>
-        <div className="shadow-md rounded-xl p-4 flex flex-col items-center">
+        <div className=" rounded-xl p-4 flex flex-col items-center">
           <span className="text-secondary-text">Last Online</span>
           <span className="text-xl font-bold">
             {new Date(lastOnlineTimeSeconds * 1000).toLocaleString() || "N/A"}
@@ -94,7 +103,7 @@ const Codeforces = () => {
 
       {/* Friend Count */}
       <div className="grid grid-cols-1 gap-4 mt-6 w-full max-w-lg">
-        <div className="shadow-md rounded-xl p-4 flex flex-col items-center">
+        <div className=" rounded-xl p-4 flex flex-col items-center">
           <span className="text-secondary-text">Friends</span>
           <span className="text-xl font-bold">{friendOfCount || "0"}</span>
         </div>

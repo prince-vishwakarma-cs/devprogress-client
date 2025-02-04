@@ -56,7 +56,7 @@ const Login = () => {
   };
 
   return (
-    <div className="flex items-center justify-center min-h-screen">
+    <div className="flex items-center justify-center min-h-screen w-screen">
       <div className="p-8 rounded-lg w-96 ">
         <h2 className="text-3xl font-bold text-center mb-4 ">
           {isLogin ? "Login" : "Register"}
@@ -68,6 +68,7 @@ const Login = () => {
               <input
                 type="text"
                 placeholder="John Doe"
+                autoComplete="off"
                 className="w-full px-4 py-2 mt-2 border border-bordercolor rounded-lg focus:outline-none focus:ring-2 focus:ring-accent"
                 value={name}
                 onChange={(e) => setName(e.target.value)}
@@ -79,6 +80,7 @@ const Login = () => {
             <input
               type="text"
               placeholder="competitive_coder"
+              autoComplete="off"
               className="w-full px-4 py-2 mt-2 border border-bordercolor rounded-lg focus:outline-none focus:ring-2 focus:ring-accent "
               value={userId}
               onChange={(e) => setUserId(e.target.value)}
@@ -88,6 +90,7 @@ const Login = () => {
             <label className="block ">Password</label>
             <input
               type="password"
+              autoComplete="new-password"
               placeholder="••••••••••••••••"
               className="w-full px-4 py-2 mt-2 border border-bordercolor rounded-lg focus:outline-none focus:ring-2 focus:ring-accent "
               value={password}
@@ -96,7 +99,7 @@ const Login = () => {
           </div>
           <button
             type="submit"
-            className="w-full mt-6 text-background bg-accent py-2 rounded-lg hover:bg-[var(--color-accent-bg)] transition duration-200"
+            className="w-full mt-6 text-background bg-accent py-2 rounded-lg hover:bg-accent-hover hover:text-primary-text transition duration-200 cursor-pointer"
             disabled={isLogin ? isLoginLoading : isRegisterLoading}
           >
             {isLogin ? (isLoginLoading ? "Logging in..." : "Login") : (isRegisterLoading ? "Creating Account..." : "Create Account")}
@@ -111,7 +114,7 @@ const Login = () => {
           {isLogin ? "Don't have an account? " : "Already have an account? "}
           <button
             onClick={() => setIsLogin(!isLogin)}
-            className="text-[var(--color-accent)] hover:underline"
+            className="text-[var(--color-accent)] hover:underline cursor-pointer"
           >
             {isLogin ? "Sign up" : "Login"}
           </button>

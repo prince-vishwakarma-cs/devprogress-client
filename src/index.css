@@ -9,6 +9,7 @@
   --color-bordercolor:rgba(255, 255, 255, 0.3);
   --color-accent:rgb(143, 253, 211);
   --color-accent-bg:#8ffdd31a;
+  --color-accent-hover:rgb(92, 158, 133);
   --color-hover-text:rgba(255, 255, 255, 0.08)
 }
 
@@ -20,14 +21,17 @@
 *{
   font-family: "Urbanist", serif;
   font-weight: 550;
-  
+}
+
+body {
+  background-color: rgb(14, 15, 15); /* A darker background color */
 }
 
 .chip {
   color: white;
   padding: 8px 16px;
-  border: 2px solid rgb(143, 253, 211);
-  border-radius: 0.5rem;
+  background-color:rgba(255, 255, 255, 0.08) ;
+  border-radius: 0.75rem;
   text-decoration: none;
   font-size: 16px;
   font-weight: 500;
@@ -35,17 +39,13 @@
 }
 
 .chip:hover {
-  background-color: #303f9f;
+  background-color: rgba(255, 255, 255, 0.08);
+  color:rgb(143, 253, 211);
 }
 
-.chip:focus {
-  background-color: #1a237e;
-}
-
-/* Active chip styles */
-.chip-active {
-  background-color: #1a237e; /* Change to your preferred active color */
-  color: #fff; /* You can adjust text color if necessary */
+.active{
+  background-color: #8ffdd31a;
+  color:rgb(143, 253, 211);
 }
 
 
@@ -58,3 +58,4 @@
 .scrollbar-hide {
   scrollbar-width: none;
 }
+

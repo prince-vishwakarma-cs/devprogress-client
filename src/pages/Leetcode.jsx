@@ -1,12 +1,12 @@
 import React from 'react';
 import { useSelector } from 'react-redux';
 import { useLeetcodebadgesQuery, useLeetcodeQuery, useLeetcodesolvedQuery } from '../redux/api/platformAPI';
+import { LoadingScreenExtras } from '../components/LoadingScreenExtras';
 
 const Leetcode = () => {
   const { user } = useSelector((state) => state.auth);
   const leetcodeUrl = user.user?.platform_url?.leetcode;
 
-  // Call both hooks outside any conditional rendering
   const { data: leetcodedata, isLoading: leetcodeLoading, error } = useLeetcodeQuery({
     username: leetcodeUrl,
   });
@@ -19,16 +19,22 @@ const Leetcode = () => {
     username: leetcodeUrl,
   });
 
-  if (leetcodeLoading || leetcodebadgeLoading || leetcodesolvedLoading) {
+  if (!leetcodeUrl || leetcodeUrl === "") {
     return (
-      <div className="flex justify-center items-center w-full h-full text-xl !p-6">
-        Loading...
+      <div className="flex justify-center items-center w-full h-full text-xl text-red-500">
+        Add User handle to get stats
       </div>
     );
   }
 
+  if (leetcodeLoading || leetcodebadgeLoading || leetcodesolvedLoading) {
+    return (
+      <LoadingScreenExtras/>
+    );
+  }
+
   if (error) {
-    console.error(error); // Log for debugging
+    console.error(error);
     return (
       <div className="flex justify-center items-center w-full h-full text-xl text-red-500 !p-6">
         Failed to fetch data. Please try again later.
@@ -52,9 +58,9 @@ const Leetcode = () => {
     school,
     skillTags,
     about,
-  } = leetcodedata || {}; // Use fallback if data is not available
+  } = leetcodedata || {};
 
-  const badges = leetcodebadgedata?.badges || []; // Fallback if no badges data
+  const badges = leetcodebadgedata?.badges || [];
 
   const solvedProblem = leetcodesolveddata?.solvedProblem || 'N/A';
   const easySolved = leetcodesolveddata?.easySolved || 'N/A';
@@ -62,11 +68,10 @@ const Leetcode = () => {
   const hardSolved = leetcodesolveddata?.hardSolved || 'N/A';
 
   return (
-    <div className="flex flex-col items-center w-full !p-6">
-      {/* Profile Section */}
-      <div className="shadow-lg rounded-2xl p-6 w-full max-w-lg flex flex-col items-center">
+    <div className="flex flex-col items-center w-full !p-6 bg-background">
+      <div className=" rounded-2xl p-6 w-full max-w-lg flex flex-col items-center">
         <img
-          src={avatar || 'default-avatar-url'} // Fallback for avatar
+          src={avatar || 'default-avatar-url'}
           alt="Profile"
           className="w-24 h-24 rounded-full border-4"
         />
@@ -75,34 +80,31 @@ const Leetcode = () => {
         <p className="text-lg mt-2">Birthday: {birthday || 'N/A'}</p>
         <p className="text-lg mt-2">Country: {country || 'N/A'}</p>
       </div>
-
-      {/* Ranking & Reputation */}
       <div className="grid grid-cols-2 gap-4 mt-6 w-full max-w-lg">
-        <div className="shadow-md rounded-xl p-4 flex flex-col items-center">
+        <div className="rounded-xl p-4 flex flex-col items-center">
           <span className="text-secondary-text">Ranking</span>
           <span className="text-xl font-bold">{ranking || 'N/A'}</span>
         </div>
-        <div className="shadow-md rounded-xl p-4 flex flex-col items-center">
+        <div className=" rounded-xl p-4 flex flex-col items-center">
           <span className="text-secondary-text">Reputation</span>
           <span className="text-xl font-bold">{reputation || 'N/A'}</span>
         </div>
       </div>
 
-      {/* Solved Problems */}
       <div className="grid grid-cols-2 gap-4 mt-6 w-full max-w-lg">
-        <div className="shadow-md rounded-xl p-4 flex flex-col items-center">
+        <div className=" rounded-xl p-4 flex flex-col items-center">
           <span className="text-secondary-text">Total Solved</span>
           <span className="text-xl font-bold">{solvedProblem}</span>
         </div>
-        <div className="shadow-md rounded-xl p-4 flex flex-col items-center">
+        <div className=" rounded-xl p-4 flex flex-col items-center">
           <span className="text-secondary-text">Easy Solved</span>
           <span className="text-xl font-bold">{easySolved}</span>
         </div>
-        <div className="shadow-md rounded-xl p-4 flex flex-col items-center">
+        <div className=" rounded-xl p-4 flex flex-col items-center">
           <span className="text-secondary-text">Medium Solved</span>
           <span className="text-xl font-bold">{mediumSolved}</span>
         </div>
-        <div className="shadow-md rounded-xl p-4 flex flex-col items-center">
+        <div className="rounded-xl p-4 flex flex-col items-center">
           <span className="text-secondary-text">Hard Solved</span>
           <span className="text-xl font-bold">{hardSolved}</span>
         </div>
@@ -134,7 +136,7 @@ const Leetcode = () => {
       {/* Social Links & More Info */}
       <div className="grid grid-cols-2 gap-4 mt-6 w-full max-w-lg">
         {gitHub && (
-          <div className="shadow-md rounded-xl p-4 flex flex-col items-center">
+          <div className=" rounded-xl p-4 flex flex-col items-center">
             <span className="text-secondary-text">GitHub</span>
             <a href={gitHub} target="_blank" rel="noopener noreferrer" className="text-xl font-bold text-blue-500">
               GitHub Profile
@@ -142,7 +144,7 @@ const Leetcode = () => {
           </div>
         )}
         {twitter && (
-          <div className="shadow-md rounded-xl p-4 flex flex-col items-center">
+          <div className=" rounded-xl p-4 flex flex-col items-center">
             <span className="text-secondary-text">Twitter</span>
             <a href={twitter} target="_blank" rel="noopener noreferrer" className="text-xl font-bold text-blue-500">
               Twitter Profile
@@ -150,7 +152,7 @@ const Leetcode = () => {
           </div>
         )}
         {linkedIN && (
-          <div className="shadow-md rounded-xl p-4 flex flex-col items-center">
+          <div className="rounded-xl p-4 flex flex-col items-center">
             <span className="text-secondary-text">LinkedIn</span>
             <a href={linkedIN} target="_blank" rel="noopener noreferrer" className="text-xl font-bold text-blue-500">
               LinkedIn Profile
@@ -158,7 +160,7 @@ const Leetcode = () => {
           </div>
         )}
         {website && (
-          <div className="shadow-md rounded-xl p-4 flex flex-col items-center">
+          <div className="rounded-xl p-4 flex flex-col items-center">
             <span className="text-secondary-text">Website</span>
             <a href={website} target="_blank" rel="noopener noreferrer" className="text-xl font-bold text-blue-500">
               Personal Website
@@ -188,11 +190,11 @@ const Leetcode = () => {
 
       {/* Company & School */}
       <div className="grid grid-cols-2 gap-4 mt-6 w-full max-w-lg">
-        <div className="shadow-md rounded-xl p-4 flex flex-col items-center">
+        <div className="rounded-xl p-4 flex flex-col items-center">
           <span className="text-secondary-text">Company</span>
           <span className="text-xl font-bold">{company || 'N/A'}</span>
         </div>
-        <div className="shadow-md rounded-xl p-4 flex flex-col items-center">
+        <div className=" rounded-xl p-4 flex flex-col items-center">
           <span className="text-secondary-text">School</span>
           <span className="text-xl font-bold">{school || 'N/A'}</span>
         </div>
