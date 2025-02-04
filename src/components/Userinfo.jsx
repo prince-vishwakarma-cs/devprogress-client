@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
-import { useUpdateMutation } from "../redux/api/userAPI";
-import { userExist } from "../redux/reducers/authSlice";
+import { useLogoutMutation, useUpdateMutation } from "../redux/api/userAPI";
+import { userExist, userNotExist } from "../redux/reducers/authSlice";
 import toast from "react-hot-toast";
 
 export const Userinfo = () => {
@@ -10,6 +10,7 @@ export const Userinfo = () => {
   const [updateUser, { isLoading }] = useUpdateMutation();
   const avatarurl = user?.user?.avatar?.url || "";
 
+  const [logoutUser, { isLoading: logoutLoading }] = useLogoutMutation();
   const [editing, setEditing] = useState(false);
   const [formData, setFormData] = useState({
     name: user?.user?.name || "",
@@ -20,14 +21,7 @@ export const Userinfo = () => {
     avatar: user?.user?.avatar || null,
   });
 
-  const originalData = {
-    name: user?.user?.name || "",
-    leetcode: user?.user?.platform_url?.leetcode || "",
-    gfg: user?.user?.platform_url?.gfg || "",
-    codeforces: user?.user?.platform_url?.codeforces || "",
-    codechef: user?.user?.platform_url?.codechef || "",
-    avatar: user?.user?.avatar || null,
-  };
+  const originalData = { ...formData };
 
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
@@ -57,6 +51,18 @@ export const Userinfo = () => {
     }
   };
 
+  const handleLogout = async () => {
+    try {
+      const { data } = await logoutUser();
+      if (data?.success) {
+        dispatch(userNotExist());
+        toast.success(data.message);
+      }
+    } catch (error) {
+      console.log("Logout Failed", error);
+    }
+  };
+
   return (
     <div className="!p-[1rem] max-w-lg mx-auto ">
       <h2 className="text-2xl font-bold mb-4">Profile Info</h2>
@@ -67,7 +73,6 @@ export const Userinfo = () => {
               src={avatarurl}
               alt="avatar"
               className="w-24 h-24 rounded-full object-cover"
-
             />
           )}
         </div>
@@ -81,7 +86,6 @@ export const Userinfo = () => {
             viewBox="0 0 24 24"
             strokeWidth="1.5"
             stroke="currentColor"
-            class="size-6"
             className={`size-5 cursor-pointer ${editing ? "hidden" : "block"}`}
             onClick={() => setEditing(!editing)}
           >
@@ -93,9 +97,7 @@ export const Userinfo = () => {
           </svg>
         </div>
 
-        {editing && (
-          <input type="file" className="w-full" onChange={handleFileChange} />
-        )}
+        {editing && <input type="file" className="w-full" onChange={handleFileChange} />}
 
         {Object.keys(formData).map(
           (key) =>
@@ -115,6 +117,7 @@ export const Userinfo = () => {
               </div>
             )
         )}
+
         {editing && (
           <div className="flex gap-4">
             <button
@@ -135,6 +138,14 @@ export const Userinfo = () => {
             </button>
           </div>
         )}
+
+        <button
+          className="w-full mt-6 bg-red-500 text-white py-2 rounded-lg hover:bg-red-600 transition cursor-pointer"
+          onClick={handleLogout}
+          disabled={logoutLoading}
+        >
+          {logoutLoading ? "Logging out..." : "Logout"}
+        </button>
       </div>
     </div>
   );

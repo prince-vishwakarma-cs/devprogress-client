@@ -29,6 +29,13 @@ export const userAPI = createApi({
       }),
       invalidatesTags: ["User"]
     }),
+    logout: builder.mutation({
+      query: () => ({
+        url: "logout",
+        method: "POST",
+      }),
+      providesTags:["User"]
+    }),
     update:builder.mutation({
       query:(formdata)=>({
         url:"/update",
@@ -43,5 +50,5 @@ export const userAPI = createApi({
   }),
 });
 
-export const { useRegisterMutation, useLoginMutation, useGetUserQuery,useUpdateMutation } =
+export const { useRegisterMutation, useLoginMutation, useGetUserQuery,useUpdateMutation ,useLogoutMutation} =
   userAPI;
