@@ -45,7 +45,7 @@ const Codeforces = () => {
   } = codeforcesdata.result[0];
 
   return (
-    <div className="flex flex-col items-center w-full p-6">
+    <div className="flex flex-col items-center w-full !p-6">
       {/* Profile & Info */}
       <div className="shadow-lg rounded-2xl p-6 w-full max-w-lg flex flex-col items-center">
         <img

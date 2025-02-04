@@ -91,7 +91,7 @@ export const Userinfo = () => {
   };
 
   return (
-    <div className="!p-[1rem] max-w-lg mx-auto ">
+    <div className="!p-[1rem] max-w-lg mx-auto  ">
       <h2 className="text-2xl font-bold mb-4">Profile Info</h2>
       <div className="space-y-4">
         <div className="flex flex-col items-center">

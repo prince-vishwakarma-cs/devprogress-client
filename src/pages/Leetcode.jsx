@@ -21,7 +21,7 @@ const Leetcode = () => {
 
   if (leetcodeLoading || leetcodebadgeLoading || leetcodesolvedLoading) {
     return (
-      <div className="flex justify-center items-center w-full h-full text-xl">
+      <div className="flex justify-center items-center w-full h-full text-xl !p-6">
         Loading...
       </div>
     );
@@ -30,7 +30,7 @@ const Leetcode = () => {
   if (error) {
     console.error(error); // Log for debugging
     return (
-      <div className="flex justify-center items-center w-full h-full text-xl text-red-500">
+      <div className="flex justify-center items-center w-full h-full text-xl text-red-500 !p-6">
         Failed to fetch data. Please try again later.
       </div>
     );
@@ -62,7 +62,7 @@ const Leetcode = () => {
   const hardSolved = leetcodesolveddata?.hardSolved || 'N/A';
 
   return (
-    <div className="flex flex-col items-center w-full p-6">
+    <div className="flex flex-col items-center w-full !p-6">
       {/* Profile Section */}
       <div className="shadow-lg rounded-2xl p-6 w-full max-w-lg flex flex-col items-center">
         <img

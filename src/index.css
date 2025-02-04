@@ -47,3 +47,14 @@
   background-color: #1a237e; /* Change to your preferred active color */
   color: #fff; /* You can adjust text color if necessary */
 }
+
+
+/* Hide scrollbar for Webkit browsers */
+.scrollbar-hide::-webkit-scrollbar {
+  display: none;
+}
+
+/* Hide scrollbar for Firefox */
+.scrollbar-hide {
+  scrollbar-width: none;
+}
