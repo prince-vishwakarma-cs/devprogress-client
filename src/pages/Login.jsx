@@ -56,7 +56,7 @@ const Login = () => {
   };
 
   return (
-    <div className="flex items-center justify-center min-h-screen w-screen">
+    <div className="flex items-center justify-center min-h-[100dvh] w-screen">
       <div className="p-8 rounded-lg w-96 ">
         <h2 className="text-3xl font-bold text-center mb-4 ">
           {isLogin ? "Login" : "Register"}
